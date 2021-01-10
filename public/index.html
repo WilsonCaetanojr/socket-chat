@@ -21,7 +21,38 @@
     </form>
 
     <script type="text/javascript">
-      var socket = io("http://localhost:3000");
+      const socket = io("http://localhost:3000");
+
+      const renderMessage = msg => {
+        $(".messages").append(
+          '<div class="message"><strong>' +
+            msg.author +
+            ": </strong>" +
+            msg.message +
+            "</div>"
+        );
+      };
+
+      socket.on("receivedMessage", function (msg) {
+        renderMessage(msg);
+      });
+
+      $("#chat").submit(function (event) {
+        event.preventDefault();
+
+        const author = $("input[name=username]").val();
+        const message = $("input[name=message]").val();
+
+        if (author.length && message.length) {
+          const messageObj = {
+            author,
+            message
+          };
+
+          renderMessage(messageObj);
+          socket.emit("sendMessage", messageObj);
+        }
+      });
     </script>
   </body>
 </html>
