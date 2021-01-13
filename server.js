@@ -23,6 +23,8 @@ let messages = [];
 io.on("connection", socket => {
   console.log(`socket conectado: ${socket.id}`);
 
+  socket.emit("allMessages", messages);
+
   socket.on("sendMessage", data => {
     messages.push(data);
     socket.broadcast.emit("receivedMessage", data);
